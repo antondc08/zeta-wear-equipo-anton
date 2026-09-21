@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zeta Wear · Matriz ABC×XYZ</title>
+<style>
+  :root { --tinta:#1d2733; --gris:#6b7683; --linea:#d9dee5; --fondo:#f6f7f9; --acento:#1f4e79; --alerta:#b45309; --alertafondo:#fff4e5; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:16px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color:var(--tinta); background:var(--fondo); line-height:1.45; }
+  main { max-width:720px; margin:0 auto; }
+  h1 { font-size:1.35rem; margin:0 0 4px; }
+  .sub { color:var(--gris); margin:0 0 16px; font-size:.95rem; }
+  #aviso { background:var(--alertafondo); border:1px solid #f0c98a; border-left:5px solid var(--alerta); border-radius:8px; padding:12px 14px; margin:0 0 16px; }
+  #aviso strong { color:var(--alerta); }
+  #aviso ul { margin:6px 0 0; padding-left:20px; }
+  .rejilla { display:grid; grid-template-columns: 34px repeat(3, 1fr); gap:6px; }
+  .cab { text-align:center; font-weight:600; color:var(--gris); padding:6px 0; font-size:.9rem; }
+  .fila { display:flex; align-items:center; justify-content:center; font-weight:600; color:var(--gris); }
+  button.celda { border:1px solid var(--linea); background:#fff; border-radius:8px; padding:12px 4px; min-height:74px; cursor:pointer; font:inherit; color:inherit; text-align:center; }
+  button.celda .cel { display:block; font-size:.8rem; color:var(--gris); }
+  button.celda .num { display:block; font-size:1.6rem; font-weight:700; }
+  button.celda.vacia { background:#eef0f3; color:var(--gris); }
+  button.celda.marcada { border-color:var(--alerta); }
+  button.celda[aria-pressed="true"] { outline:3px solid var(--acento); outline-offset:1px; }
+  #detalle { margin-top:16px; background:#fff; border:1px solid var(--linea); border-radius:8px; padding:14px; }
+  #detalle h2 { font-size:1.05rem; margin:0 0 8px; }
+  #detalle ul { margin:0; padding-left:20px; }
+  .pie { color:var(--gris); font-size:.8rem; margin-top:16px; }
+  .error { color:#b42318; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Zeta Wear · Matriz ABC×XYZ</h1>
+  <p class="sub">ABC por margen anual (filas) × XYZ por variabilidad mensual (columnas). Toca una celda para ver sus referencias.</p>
+
+  <section id="aviso" aria-live="polite">Cargando…</section>
+
+  <div id="matriz" class="rejilla" role="group" aria-label="Matriz ABC por XYZ"></div>
+
+  <section id="detalle"><h2>Selecciona una celda</h2><p>Aquí aparecerán las referencias.</p></section>
+
+  <p class="pie">Datos: resultados/clasificacion.csv. Los avisos se calculan a partir de ese fichero.</p>
+</main>
+
+<script>
+(function () {
+  var ABC = ["A", "B", "C"], XYZ = ["X", "Y", "Z"];
+  var AVISO = ["AZ", "AY"];
+  var porCelda = {};
+
+  function parseCSV(texto) {
+    var lineas = texto.trim().split(/\r?\n/);
+    var cab = lineas[0].split(",");
+    return lineas.slice(1).map(function (l) {
+      var v = l.split(","), o = {};
+      cab.forEach(function (c, i) { o[c] = v[i]; });
+      return o;
+    });
+  }
+
+  function refs(celda) { return porCelda[celda] || []; }
+
+  function pintarAviso() {
+    var caja = document.getElementById("aviso");
+    var html = "<strong>Atención · celdas AZ y AY</strong><ul>";
+    AVISO.forEach(function (c) {
+      var r = refs(c);
+      if (r.length === 0) {
+        html += "<li><b>" + c + "</b>: 0 referencias. No hay ninguna referencia con mucho valor y demanda errática.</li>";
+      } else {
+        html += "<li><b>" + c + "</b>: " + r.length + " referencias (" + r.map(function (x) { return x.sku; }).join(", ") + ").</li>";
+      }
+    });
+    caja.innerHTML = html + "</ul>";
+  }
+
+  function pintarDetalle(celda) {
+    var r = refs(celda), d = document.getElementById("detalle");
+    var titulo = "<h2>Celda " + celda + " · " + r.length + (r.length === 1 ? " referencia" : " referencias") + "</h2>";
+    if (!r.length) { d.innerHTML = titulo + "<p>Celda vacía.</p>"; return; }
+    d.innerHTML = titulo + "<ul>" + r.map(function (x) {
+      return "<li>" + x.sku + " · CV " + Number(x.cv).toFixed(2).replace(".", ",") + "</li>";
+    }).join("") + "</ul>";
+  }
+
+  function pintarMatriz() {
+    var m = document.getElementById("matriz");
+    m.innerHTML = "<div></div>";
+    XYZ.forEach(function (x) { m.insertAdjacentHTML("beforeend", '<div class="cab">' + x + "</div>"); });
+    ABC.forEach(function (a) {
+      m.insertAdjacentHTML("beforeend", '<div class="fila">' + a + "</div>");
+      XYZ.forEach(function (x) {
+        var c = a + x, n = refs(c).length;
+        var cls = "celda" + (n === 0 ? " vacia" : "") + (AVISO.indexOf(c) >= 0 ? " marcada" : "");
+        m.insertAdjacentHTML("beforeend",
+          '<button type="button" class="' + cls + '" data-celda="' + c + '" aria-pressed="false">' +
+          '<span class="cel">' + c + '</span><span class="num">' + n + "</span></button>");
+      });
+    });
+    m.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-celda]");
+      if (!b) return;
+      m.querySelectorAll("button").forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+      b.setAttribute("aria-pressed", "true");
+      pintarDetalle(b.getAttribute("data-celda"));
+    });
+  }
+
+  fetch("resultados/clasificacion.csv")
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then(function (t) {
+      parseCSV(t).forEach(function (f) { (porCelda[f.celda] = porCelda[f.celda] || []).push(f); });
+      pintarAviso();
+      pintarMatriz();
+    })
+    .catch(function (e) {
+      document.getElementById("aviso").innerHTML = '<span class="error">No se pudo cargar resultados/clasificacion.csv (' + e.message + ").</span>";
+    });
+})();
+</script>
+</body>
+</html>
