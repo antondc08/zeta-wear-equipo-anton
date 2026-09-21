@@ -12,4 +12,4 @@ Nota: la celda AZ está vacía; ninguna referencia de clase A tiene demanda err�
 
 ---
 Escaparate: https://antondc08.github.io/zeta-wear-equipo-anton/
-Equipo: Antón Dopico Casquero
+Equipo: Antón Dopico Casquero e Isay Rodríguez Fidalgo
