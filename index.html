@@ -5,115 +5,209 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zeta Wear · Matriz ABC×XYZ</title>
 <style>
-  :root { --tinta:#1d2733; --gris:#6b7683; --linea:#d9dee5; --fondo:#f6f7f9; --acento:#1f4e79; --alerta:#b45309; --alertafondo:#fff4e5; }
-  * { box-sizing: border-box; }
-  body { margin:0; padding:16px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color:var(--tinta); background:var(--fondo); line-height:1.45; }
-  main { max-width:720px; margin:0 auto; }
-  h1 { font-size:1.35rem; margin:0 0 4px; }
-  .sub { color:var(--gris); margin:0 0 16px; font-size:.95rem; }
-  #aviso { background:var(--alertafondo); border:1px solid #f0c98a; border-left:5px solid var(--alerta); border-radius:8px; padding:12px 14px; margin:0 0 16px; }
-  #aviso strong { color:var(--alerta); }
-  #aviso ul { margin:6px 0 0; padding-left:20px; }
-  .rejilla { display:grid; grid-template-columns: 34px repeat(3, 1fr); gap:6px; }
-  .cab { text-align:center; font-weight:600; color:var(--gris); padding:6px 0; font-size:.9rem; }
-  .fila { display:flex; align-items:center; justify-content:center; font-weight:600; color:var(--gris); }
-  button.celda { border:1px solid var(--linea); background:#fff; border-radius:8px; padding:12px 4px; min-height:74px; cursor:pointer; font:inherit; color:inherit; text-align:center; }
-  button.celda .cel { display:block; font-size:.8rem; color:var(--gris); }
-  button.celda .num { display:block; font-size:1.6rem; font-weight:700; }
-  button.celda.vacia { background:#eef0f3; color:var(--gris); }
-  button.celda.marcada { border-color:var(--alerta); }
-  button.celda[aria-pressed="true"] { outline:3px solid var(--acento); outline-offset:1px; }
-  #detalle { margin-top:16px; background:#fff; border:1px solid var(--linea); border-radius:8px; padding:14px; }
-  #detalle h2 { font-size:1.05rem; margin:0 0 8px; }
-  #detalle ul { margin:0; padding-left:20px; }
-  .pie { color:var(--gris); font-size:.8rem; margin-top:16px; }
-  .error { color:#b42318; }
+  :root {
+    --tinta:#14202e; --gris:#5d6b7a; --linea:#dde3ea; --fondo:#f3f5f8; --blanco:#fff; --azul:#1f4e79;
+    --verde:#1e7a4f; --verde-f:#e3f4ec; --ambar:#b45309; --ambar-f:#fdf0dc; --rojo:#b42318; --rojo-f:#fbe6e3;
+    --sombra:0 1px 2px rgba(20,32,46,.06), 0 4px 14px rgba(20,32,46,.06);
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--tinta); background:var(--fondo); line-height:1.45; }
+  header { background:linear-gradient(135deg,#14324f,#1f4e79); color:#fff; padding:28px 16px 64px; }
+  .ancho { max-width:900px; margin:0 auto; }
+  header .etq { font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; opacity:.75; margin:0 0 6px; }
+  header h1 { font-size:1.6rem; margin:0 0 6px; }
+  header p { margin:0; opacity:.88; max-width:60ch; }
+  main { max-width:900px; margin:-40px auto 0; padding:0 16px 32px; }
+  .tarjeta { background:var(--blanco); border:1px solid var(--linea); border-radius:12px; box-shadow:var(--sombra); padding:16px; margin-bottom:16px; }
+  .cifras { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .cifra { background:var(--blanco); border:1px solid var(--linea); border-radius:12px; box-shadow:var(--sombra); padding:12px; }
+  .cifra b { display:block; font-size:1.35rem; }
+  .cifra span { color:var(--gris); font-size:.8rem; }
+  #aviso { border-left:6px solid var(--ambar); background:var(--ambar-f); }
+  #aviso h2 { margin:0 0 8px; font-size:1rem; color:var(--ambar); text-transform:uppercase; letter-spacing:.06em; }
+  #aviso .linea { display:flex; gap:10px; align-items:flex-start; margin:6px 0; }
+  #aviso .chip { flex:none; font-weight:700; padding:2px 10px; border-radius:999px; color:#fff; font-size:.85rem; }
+  #aviso .chip.az { background:var(--rojo); }
+  #aviso .chip.ay { background:var(--ambar); }
+  h2.t { font-size:1.05rem; margin:0 0 4px; }
+  .nota { color:var(--gris); font-size:.85rem; margin:0 0 12px; }
+  .eje-x { text-align:center; color:var(--gris); font-size:.78rem; margin-left:34px; }
+  .cuadro { display:grid; grid-template-columns:34px 1fr; gap:6px; align-items:stretch; }
+  .eje-y { writing-mode:vertical-rl; transform:rotate(180deg); text-align:center; color:var(--gris); font-size:.78rem; }
+  .rejilla { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .cab { text-align:center; font-weight:700; color:var(--gris); font-size:.9rem; padding:2px 0; }
+  button.celda { border:2px solid transparent; border-radius:10px; padding:10px 4px; min-height:84px; cursor:pointer; font:inherit; color:var(--tinta); text-align:center; }
+  button.celda .cel { display:block; font-size:.78rem; font-weight:700; letter-spacing:.06em; }
+  button.celda .num { display:block; font-size:1.9rem; font-weight:800; line-height:1.1; }
+  button.celda.x { background:var(--verde-f); } button.celda.y { background:var(--ambar-f); } button.celda.z { background:var(--rojo-f); }
+  button.celda.vacia { background:#eef0f3; color:var(--gris); border:2px dashed #c4ccd6; }
+  button.celda.marcada:not(.vacia) { border-color:var(--ambar); }
+  button.celda.marcada.vacia { border-color:var(--rojo); }
+  button.celda[aria-pressed="true"] { outline:3px solid var(--azul); outline-offset:2px; }
+  .leyenda { display:flex; flex-wrap:wrap; gap:12px; margin-top:12px; font-size:.78rem; color:var(--gris); }
+  .leyenda i { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:5px; vertical-align:-1px; }
+  .barras .fila { display:grid; grid-template-columns:70px 1fr 62px; gap:8px; align-items:center; margin:8px 0; font-size:.85rem; }
+  .barra { background:#e8ecf1; border-radius:6px; height:14px; overflow:hidden; }
+  .barra > div { height:100%; background:var(--azul); }
+  #detalle h2 { margin:0 0 4px; font-size:1.05rem; }
+  #detalle .pol { background:var(--fondo); border-radius:8px; padding:10px 12px; margin:8px 0 12px; font-size:.9rem; }
+  .tabla-caja { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+  th { text-align:left; color:var(--gris); font-weight:600; font-size:.78rem; border-bottom:1px solid var(--linea); padding:6px 8px 6px 0; }
+  td { padding:7px 8px 7px 0; border-bottom:1px solid var(--linea); }
+  td.n, th.n { text-align:right; white-space:nowrap; }
+  footer { color:var(--gris); font-size:.8rem; padding:0 0 8px; }
+  footer a { color:var(--azul); }
+  .error { color:var(--rojo); }
+  @media (max-width:520px) { .cifra { padding:10px 8px; } .cifra b { font-size:1.05rem; } .cifra span { font-size:.7rem; } header h1 { font-size:1.35rem; } button.celda .num { font-size:1.6rem; } }
 </style>
 </head>
 <body>
+<header>
+  <div class="ancho">
+    <p class="etq">GOEI · Lab «El becario infinito»</p>
+    <h1>Zeta Wear · Matriz ABC×XYZ</h1>
+    <p>Qué referencias del catálogo merecen atención de gestión: valor (ABC por margen anual) frente a previsibilidad (XYZ por variabilidad mensual).</p>
+  </div>
+</header>
+
 <main>
-  <h1>Zeta Wear · Matriz ABC×XYZ</h1>
-  <p class="sub">ABC por margen anual (filas) × XYZ por variabilidad mensual (columnas). Toca una celda para ver sus referencias.</p>
+  <section class="cifras" id="cifras" aria-label="Cifras clave"></section>
+  <section id="aviso" class="tarjeta" aria-live="polite" style="margin-top:16px">Cargando…</section>
 
-  <section id="aviso" aria-live="polite">Cargando…</section>
+  <section class="tarjeta">
+    <h2 class="t">Matriz por celdas</h2>
+    <p class="nota">Número de referencias en cada celda. Toca una celda para ver sus referencias.</p>
+    <div class="eje-x">Previsibilidad (XYZ) →</div>
+    <div class="cuadro">
+      <div class="eje-y">Valor (ABC) →</div>
+      <div id="matriz" class="rejilla" role="group" aria-label="Matriz ABC por XYZ"></div>
+    </div>
+    <div class="leyenda">
+      <span><i style="background:var(--verde-f);border:1px solid #bfe3cf"></i>X · estable: automatizable</span>
+      <span><i style="background:var(--ambar-f);border:1px solid #f1d6a5"></i>Y · variable: persona + sistema</span>
+      <span><i style="background:var(--rojo-f);border:1px solid #f3c3bd"></i>Z · errática: decidir con criterio</span>
+    </div>
+  </section>
 
-  <div id="matriz" class="rejilla" role="group" aria-label="Matriz ABC por XYZ"></div>
+  <section id="detalle" class="tarjeta"><h2>Selecciona una celda</h2><p class="nota">Aquí aparecerán sus referencias y su política.</p></section>
 
-  <section id="detalle"><h2>Selecciona una celda</h2><p>Aquí aparecerán las referencias.</p></section>
+  <section class="tarjeta barras" id="barras"><h2 class="t">Margen por clase</h2><p class="nota">Cuánto del margen anual concentra cada clase ABC.</p></section>
 
-  <p class="pie">Datos: resultados/clasificacion.csv. Los avisos se calculan a partir de ese fichero.</p>
+  <footer>
+    Datos: <code>resultados/clasificacion.csv</code>, <code>abc.csv</code> y <code>politicas.md</code>, todos del repositorio.
+    Corte ABC 80/95 sobre margen anual; XYZ con CV mensual (0,25 / 0,5).
+  </footer>
 </main>
 
 <script>
 (function () {
-  var ABC = ["A", "B", "C"], XYZ = ["X", "Y", "Z"];
-  var AVISO = ["AZ", "AY"];
-  var porCelda = {};
+  var ABC = ["A", "B", "C"], XYZ = ["X", "Y", "Z"], AVISO = ["AZ", "AY"];
+  var porCelda = {}, margen = {}, politicas = {}, seleccionada = null;
+  var eur = new Intl.NumberFormat("es-ES", { maximumFractionDigits: 0 });
+  var pct1 = new Intl.NumberFormat("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  var num2 = new Intl.NumberFormat("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-  function parseCSV(texto) {
-    var lineas = texto.trim().split(/\r?\n/);
-    var cab = lineas[0].split(",");
-    return lineas.slice(1).map(function (l) {
-      var v = l.split(","), o = {};
-      cab.forEach(function (c, i) { o[c] = v[i]; });
-      return o;
-    });
+  function parseCSV(t) {
+    var l = t.trim().split(/\r?\n/), cab = l[0].split(",");
+    return l.slice(1).map(function (x) { var v = x.split(","), o = {}; cab.forEach(function (c, i) { o[c] = v[i]; }); return o; });
+  }
+  function parsePoliticas(t) {
+    var out = {}, re = /^## (\w\w) [^\n]*\n([^\n]+)/gm, m;
+    while ((m = re.exec(t)) !== null) out[m[1]] = m[2].trim();
+    return out;
+  }
+  function refs(c) { return porCelda[c] || []; }
+  function pedir(url, opcional) {
+    return fetch(url).then(function (r) { if (!r.ok) throw new Error(url + " " + r.status); return r.text(); })
+      .catch(function (e) { if (opcional) return null; throw e; });
   }
 
-  function refs(celda) { return porCelda[celda] || []; }
+  function pintarCifras() {
+    var total = 0, a = 0, nA = 0, todas = 0;
+    Object.keys(margen).forEach(function (s) { total += margen[s].valor; });
+    Object.keys(porCelda).forEach(function (c) {
+      todas += porCelda[c].length;
+      if (c[0] === "A") { nA += porCelda[c].length; porCelda[c].forEach(function (r) { a += (margen[r.sku] || { valor: 0 }).valor; }); }
+    });
+    var hayMargen = total > 0;
+    document.getElementById("cifras").innerHTML =
+      '<div class="cifra"><b>' + todas + '</b><span>referencias en el catálogo</span></div>' +
+      '<div class="cifra"><b>' + (hayMargen ? eur.format(total) + " €" : "—") + '</b><span>margen anual total</span></div>' +
+      '<div class="cifra"><b>' + (hayMargen ? pct1.format(a / total * 100) + " %" : "—") + '</b><span>del margen en las ' + nA + ' referencias A</span></div>';
+  }
 
   function pintarAviso() {
-    var caja = document.getElementById("aviso");
-    var html = "<strong>Atención · celdas AZ y AY</strong><ul>";
+    var html = "<h2>Atención · celdas AZ y AY</h2>";
     AVISO.forEach(function (c) {
-      var r = refs(c);
-      if (r.length === 0) {
-        html += "<li><b>" + c + "</b>: 0 referencias. No hay ninguna referencia con mucho valor y demanda errática.</li>";
-      } else {
-        html += "<li><b>" + c + "</b>: " + r.length + " referencias (" + r.map(function (x) { return x.sku; }).join(", ") + ").</li>";
-      }
+      var r = refs(c), cls = c === "AZ" ? "az" : "ay";
+      html += '<div class="linea"><span class="chip ' + cls + '">' + c + "</span><span>" +
+        (r.length === 0
+          ? "<b>0 referencias.</b> Ninguna referencia con mucho valor tiene demanda errática."
+          : "<b>" + r.length + " referencias</b> con mucho valor y demanda variable: " + r.map(function (x) { return x.sku; }).join(", ") + ".") +
+        "</span></div>";
     });
-    caja.innerHTML = html + "</ul>";
+    document.getElementById("aviso").innerHTML = html;
   }
 
-  function pintarDetalle(celda) {
-    var r = refs(celda), d = document.getElementById("detalle");
-    var titulo = "<h2>Celda " + celda + " · " + r.length + (r.length === 1 ? " referencia" : " referencias") + "</h2>";
-    if (!r.length) { d.innerHTML = titulo + "<p>Celda vacía.</p>"; return; }
-    d.innerHTML = titulo + "<ul>" + r.map(function (x) {
-      return "<li>" + x.sku + " · CV " + Number(x.cv).toFixed(2).replace(".", ",") + "</li>";
-    }).join("") + "</ul>";
+  function pintarDetalle(c) {
+    var r = refs(c), d = document.getElementById("detalle");
+    var html = "<h2>Celda " + c + " · " + r.length + (r.length === 1 ? " referencia" : " referencias") + "</h2>";
+    if (politicas[c]) html += '<div class="pol"><b>Política:</b> ' + politicas[c] + "</div>";
+    if (!r.length) { d.innerHTML = html + "<p>Celda vacía: no hay referencias con esta combinación.</p>"; return; }
+    var conMargen = r.some(function (x) { return margen[x.sku]; });
+    html += '<div class="tabla-caja"><table><thead><tr><th>Referencia</th>' +
+      (conMargen ? '<th class="n">Margen anual</th><th class="n">% acumulado</th>' : "") + '<th class="n">CV</th></tr></thead><tbody>';
+    r.slice().sort(function (p, q) { return ((margen[q.sku] || {}).valor || 0) - ((margen[p.sku] || {}).valor || 0); })
+      .forEach(function (x) {
+        var m = margen[x.sku];
+        html += "<tr><td>" + x.sku + "</td>" + (conMargen ? '<td class="n">' + (m ? eur.format(m.valor) + " €" : "—") + '</td><td class="n">' + (m ? pct1.format(m.acum) + " %" : "—") + "</td>" : "") +
+          '<td class="n">' + num2.format(Number(x.cv)) + "</td></tr>";
+      });
+    d.innerHTML = html + "</tbody></table></div>";
+  }
+
+  function pintarBarras() {
+    var total = 0, porClase = { A: 0, B: 0, C: 0 }, n = { A: 0, B: 0, C: 0 };
+    Object.keys(margen).forEach(function (s) { total += margen[s].valor; porClase[margen[s].clase] += margen[s].valor; n[margen[s].clase]++; });
+    if (!total) { document.getElementById("barras").style.display = "none"; return; }
+    var html = '<h2 class="t">Margen por clase</h2><p class="nota">Cuánto del margen anual concentra cada clase ABC.</p>';
+    ABC.forEach(function (c) {
+      var p = porClase[c] / total * 100;
+      html += '<div class="fila"><span><b>Clase ' + c + "</b><br>" + n[c] + ' ref.</span><div class="barra"><div style="width:' + p.toFixed(1) + '%"></div></div><span style="text-align:right"><b>' + pct1.format(p) + " %</b></span></div>";
+    });
+    document.getElementById("barras").innerHTML = html;
   }
 
   function pintarMatriz() {
     var m = document.getElementById("matriz");
-    m.innerHTML = "<div></div>";
+    m.innerHTML = "";
     XYZ.forEach(function (x) { m.insertAdjacentHTML("beforeend", '<div class="cab">' + x + "</div>"); });
     ABC.forEach(function (a) {
-      m.insertAdjacentHTML("beforeend", '<div class="fila">' + a + "</div>");
       XYZ.forEach(function (x) {
         var c = a + x, n = refs(c).length;
-        var cls = "celda" + (n === 0 ? " vacia" : "") + (AVISO.indexOf(c) >= 0 ? " marcada" : "");
-        m.insertAdjacentHTML("beforeend",
-          '<button type="button" class="' + cls + '" data-celda="' + c + '" aria-pressed="false">' +
+        var cls = "celda " + x.toLowerCase() + (n === 0 ? " vacia" : "") + (AVISO.indexOf(c) >= 0 ? " marcada" : "");
+        m.insertAdjacentHTML("beforeend", '<button type="button" class="' + cls + '" data-celda="' + c + '" aria-pressed="false" aria-label="Celda ' + c + ", " + n + ' referencias">' +
           '<span class="cel">' + c + '</span><span class="num">' + n + "</span></button>");
       });
     });
     m.addEventListener("click", function (e) {
-      var b = e.target.closest("button[data-celda]");
-      if (!b) return;
-      m.querySelectorAll("button").forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
-      b.setAttribute("aria-pressed", "true");
-      pintarDetalle(b.getAttribute("data-celda"));
+      var b = e.target.closest("button[data-celda]"); if (!b) return;
+      seleccionar(b.getAttribute("data-celda"));
     });
   }
 
-  fetch("resultados/clasificacion.csv")
-    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
-    .then(function (t) {
-      parseCSV(t).forEach(function (f) { (porCelda[f.celda] = porCelda[f.celda] || []).push(f); });
-      pintarAviso();
-      pintarMatriz();
+  function seleccionar(c) {
+    document.querySelectorAll("#matriz button").forEach(function (o) { o.setAttribute("aria-pressed", o.getAttribute("data-celda") === c ? "true" : "false"); });
+    seleccionada = c; pintarDetalle(c);
+  }
+
+  Promise.all([pedir("resultados/clasificacion.csv", false), pedir("resultados/abc.csv", true), pedir("resultados/politicas.md", true)])
+    .then(function (r) {
+      parseCSV(r[0]).forEach(function (f) { (porCelda[f.celda] = porCelda[f.celda] || []).push(f); });
+      if (r[1]) parseCSV(r[1]).forEach(function (f) { margen[f.sku] = { valor: Number(f.margen_anual), acum: Number(f.pct_acumulado), clase: f.clase_abc }; });
+      if (r[2]) politicas = parsePoliticas(r[2]);
+      pintarCifras(); pintarAviso(); pintarMatriz(); pintarBarras(); seleccionar("AY");
     })
     .catch(function (e) {
       document.getElementById("aviso").innerHTML = '<span class="error">No se pudo cargar resultados/clasificacion.csv (' + e.message + ").</span>";
