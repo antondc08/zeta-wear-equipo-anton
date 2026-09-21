@@ -34,4 +34,4 @@ La guía paso a paso completa: `GUIA_EQUIPO.md`.
 - **Escaparate:** https://antondc08.github.io/zeta-wear-equipo-anton/ (GitHub Pages en lugar de Vercel; se redespliega solo con cada merge a `main`).
 - **Resultados:** `resultados/abc.csv`, `xyz.csv`, `clasificacion.csv`, `politicas.md` y `memo.md`.
 - **Encargo 4:** los KPIs no se pueden calcular con los datos del repo (faltan stock y roturas por SKU); ver `resultados/kpis_NO_CALCULABLE.md`.
-- **Auditoría:** cada encargo tiene su PR (#6 a #12) con checklist marcado, muestreo recalculado a mano y comentarios en líneas concretas. La comparación con la revisión automática de Gemini Code Assist queda pendiente de que la app termine de configurarse (instalada en este repo, sin respuestas todavía).
+- **Auditoría:** cada encargo tiene su PR (#6 a #12) con checklist marcado, muestreo recalculado a mano y comentarios en líneas concretas. La auditoría del borrador que redactó Gemini está en `resultados/auditoria_borrador_gemini.md`; la comparación con la revisión automática de Gemini Code Assist queda pendiente de que la app responda en un PR.
